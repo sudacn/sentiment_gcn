@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #coding=utf-8
-from __future__ import division
+
 import numpy as np
 import scipy.sparse as sp
 from scipy.sparse.linalg.eigen.arpack import eigsh, ArpackNoConvergence
@@ -56,7 +56,7 @@ def eval(tests,pred_y):
         if py==tests[i].label:
             n+=1
             
-    print 'Acc:',n/len(tests)
+    print('Acc:',n/len(tests))
 
 def padding(x,ml=maxlen):
     new_x = []
@@ -79,7 +79,7 @@ def get_basic_edges(reviews):
             if reviews[i].uid==reviews[j].uid:
                 edges.append([i,j])
     
-    print 'Edges:',len(edges)
+    print('Edges:',len(edges))
 
     return edges
 
@@ -120,7 +120,7 @@ def rescale_laplacian(laplacian):
 
 def chebyshev_polynomial(X, k):
     """Calculate Chebyshev polynomials up to order k. Return a list of sparse matrices."""
-    print("Calculating Chebyshev polynomials up to order {}...".format(k))
+    print(("Calculating Chebyshev polynomials up to order {}...".format(k)))
 
     T_k = list()
     T_k.append(sp.eye(X.shape[0]).tocsr())
@@ -177,7 +177,7 @@ def prepare_data(trains,tests,V):
             u_dict[r.uid]=''
         u_dict[r.uid]+=' '+r.text
 
-    u_reviews=[Review(0,uid,-1,text) for uid,text in u_dict.items()]
+    u_reviews=[Review(0,uid,-1,text) for uid,text in list(u_dict.items())]
 
     reviews=reviews+u_reviews
 
@@ -193,7 +193,7 @@ def prepare_data(trains,tests,V):
             if reviews[i].uid==reviews[j].uid:
                 edges.append([i,j])
     
-    print 'Edges:',len(edges)
+    print('Edges:',len(edges))
 
 
     # local pool

@@ -28,7 +28,7 @@ def read_file(domain):
                 text=text.strip()
 
                 reviews.append(Review(label,uid,pid,text))
-    print len(reviews)
+    print(len(reviews))
 
     trains=reviews[:3000]
     tests=reviews[3000:4000]
