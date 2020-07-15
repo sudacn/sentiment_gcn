@@ -15,11 +15,15 @@ from kegra.utils import *
 def gcn(v_size,F,N,n_classes):
     x_in = Input(shape=(None, ))
     g = Input((N, ), sparse=True)
-          
+    # adj N*N
+    # feature N*dim
     # transformer
     embedding = Embedding(v_size, emb_dim)
-    e = embedding(x_in)
-    h = Attention(8, 16)([e, e, e])
+    
+    h = embedding(x_in)
+    
+    #print(e)
+    #h = Attention(8, 16)([e, e, e])
     h = GlobalAveragePooling1D()(h)
 
     # gcn, support=1
@@ -27,8 +31,9 @@ def gcn(v_size,F,N,n_classes):
     #h = GraphConvolution(h_dim, 1, activation='relu')([h,g])
     
     out = GraphConvolution(n_classes, 1, activation='sigmoid')([h,g])
-
     #out = Dense(1, activation='sigmoid')(h)
+    # print(out)
+    out1 = Dense(1, activation='sigmoid')(out)
 
     model = Model(inputs=[x_in,g], outputs=out)
     model.compile(loss='binary_crossentropy', optimizer='adam')

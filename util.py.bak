@@ -1,24 +1,18 @@
 #! /usr/bin/env python
 #coding=utf-8
-
+from __future__ import division
 import numpy as np
 import scipy.sparse as sp
 from scipy.sparse.linalg.eigen.arpack import eigsh, ArpackNoConvergence
 from data import Review
 
-maxlen=150
+maxlen=100
 emb_dim = 128
 h_dim = 128
 batch_size=64
 epoch=10
 
 MAX_DEGREE=2
-
-
-PATH="/data2/nchen/sentiment/data/finalV2.csv"
-LOCAL2ID = {'安徽': 0, '陕西': 1, '浙江': 2, '湖北': 3, '西藏': 4, '其他': 5, '甘肃': 6, '贵州': 7, '云南': 8, '湖南': 9, '内蒙古': 10, '江苏': 11, '福建': 12, '海外': 13, '山东': 14, '吉林': 15, '河北': 16, '重庆': 17, '四川': 18, '香港': 19, '上海': 20, '青海': 21, '新疆': 22, '天津': 23, '北京': 24, '广西': 25, '海南': 26, '山西': 27, '辽宁': 28, '河南': 29, '广东': 30, '江西': 31, '黑龙江': 32}
-SENTI2ID = {'喜':0,'怒':1,'惊':2,'恐':3,'哀':4}
-SENTILABED = [0,0,0,0,0]
 
 def get_vocabrary(reviews):
     # DF
@@ -33,7 +27,7 @@ def get_vocabrary(reviews):
     df.reverse()
     V = {}
     for score,w in df:
-        V[w] = len(V) 
+        V[w] = len(V)
     return V
 
 def format_k(text,V):
@@ -51,6 +45,7 @@ def format_data(reviews,V):
 
 def eval(tests,pred_y):
     # acc
+    
     n=0
     for i in range(len(tests)):
         if pred_y[i]>0.5:
@@ -61,7 +56,7 @@ def eval(tests,pred_y):
         if py==tests[i].label:
             n+=1
             
-    print('Acc:',n/len(tests))
+    print 'Acc:',n/len(tests)
 
 def padding(x,ml=maxlen):
     new_x = []
@@ -83,13 +78,8 @@ def get_basic_edges(reviews):
             # same user id
             if reviews[i].uid==reviews[j].uid:
                 edges.append([i,j])
-            #same location
-            if reviews[i].location==reviews[j].location:
-                edges.append([i,j])
-            #same gender
-            if reviews[i].gender==reviews[j].gender:
-                edges.append([i,j])
-    print('Edges:',len(edges))
+    
+    print 'Edges:',len(edges)
 
     return edges
 
@@ -130,7 +120,7 @@ def rescale_laplacian(laplacian):
 
 def chebyshev_polynomial(X, k):
     """Calculate Chebyshev polynomials up to order k. Return a list of sparse matrices."""
-    print(("Calculating Chebyshev polynomials up to order {}...".format(k)))
+    print("Calculating Chebyshev polynomials up to order {}...".format(k))
 
     T_k = list()
     T_k.append(sp.eye(X.shape[0]).tocsr())
@@ -179,7 +169,7 @@ def get_train_mask(n,m):
 
 
 def prepare_data(trains,tests,V):
-    reviews=labeled+unlabeled+tests
+    reviews=trains+tests
 
     u_dict={}
     for r in reviews:
@@ -187,7 +177,7 @@ def prepare_data(trains,tests,V):
             u_dict[r.uid]=''
         u_dict[r.uid]+=' '+r.text
 
-    u_reviews=[Review(0,uid,-1,text) for uid,text in list(u_dict.items())]
+    u_reviews=[Review(0,uid,-1,text) for uid,text in u_dict.items()]
 
     reviews=reviews+u_reviews
 
@@ -203,7 +193,7 @@ def prepare_data(trains,tests,V):
             if reviews[i].uid==reviews[j].uid:
                 edges.append([i,j])
     
-    print('Edges:',len(edges))
+    print 'Edges:',len(edges)
 
 
     # local pool

@@ -1,4 +1,6 @@
+#-*- coding: UTF-8 -*-
 import pandas as pd
+import numpy as np
 #from util import *
 #! /usr/bin/env python
 #coding=utf-8
@@ -9,13 +11,14 @@ import pandas as pd
 #Video_Games_5
 SENTI2ID = {'喜':0,'怒':1,'惊':2,'恐':3,'哀':4}
 LOCAL2ID = {'安徽': 0, '陕西': 1, '浙江': 2, '湖北': 3, '西藏': 4, '其他': 5, '甘肃': 6, '贵州': 7, '云南': 8, '湖南': 9, '内蒙古': 10, '江苏': 11, '福建': 12, '海外': 13, '山东': 14, '吉林': 15, '河北': 16, '重庆': 17, '四川': 18, '香港': 19, '上海': 20, '青海': 21, '新疆': 22, '天津': 23, '北京': 24, '广西': 25, '海南': 26, '山西': 27, '辽宁': 28, '河南': 29, '广东': 30, '江西': 31, '黑龙江': 32}
+
 class Review:
     def __init__(self,label,review,location,gender,uid):
         self.label=label # binary
-        self.review=review # user review
+        self.text=review # user review
         self.location=location # location
         self.gender=gender
-        self.id=uid
+        self.uid=uid
 
 def sen2word(sen, stopwords):
     seg_list = jieba.cut(sen)
@@ -86,6 +89,7 @@ def read_file(domain):
     for index,row in data.iterrows():
         #print(row)
         label = emoji2id(str(row['senti']))
+        label = np.array(label)
 
         location = location2id(row["location"])
 
