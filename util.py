@@ -42,23 +42,32 @@ def format_k(text,V):
 def format_data(reviews,V):
     X=[]
     Y=[]
-
+    
     for r in reviews:
         X.append(format_k(r.text,V))
         Y.append(r.label)
+    X = np.array(X)
+    Y = np.array(Y)
 
     return X,Y
 
 def eval(tests,pred_y):
     # acc
     n=0
+    pred_y = np.array(pred_y)
+    pred_y = np.where(pred_y<0.5, 0, 1)
+    #pred_y = pred_y.tolist()
+    #print(pred_y)
     for i in range(len(tests)):
-        if pred_y[i]>0.5:
-            py=1
-        else:
-            py=0
         
-        if py==tests[i].label:
+        # if pred_y[i]>0.5:
+        #     py=1
+        # else:
+        #     py=0
+        
+        if (pred_y[i]==tests[i].label).all():
+            print(pred_y[i],tests[i].label)
+            print(tests[i].text)
             n+=1
             
     print('Acc:',n/len(tests))

@@ -87,7 +87,7 @@ def read_file(domain):
     data = pd.read_csv(domain)
 
     for index,row in data.iterrows():
-        #print(row)
+        
         label = emoji2id(str(row['senti']))
         label = np.array(label)
 
@@ -100,8 +100,8 @@ def read_file(domain):
 
         uid = row["id"]
         uid = int(uid)
-
-        #print(label,text,location,gender,uid)
+        # if index < 3000:
+        #     print(label,text,location,gender,uid)
         review = Review(label,text,location,gender,uid)
         #print(review)
         reviews.append(review)

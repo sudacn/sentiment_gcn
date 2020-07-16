@@ -24,7 +24,7 @@ def gcn(v_size,F,N,n_classes):
     
     #print(e)
     #h = Attention(8, 16)([e, e, e])
-    h = GlobalAveragePooling1D()(h)
+    #h = GlobalAveragePooling1D()(h)
 
     # gcn, support=1
     #h = Dropout(0.5)(h)
@@ -33,7 +33,7 @@ def gcn(v_size,F,N,n_classes):
     out = GraphConvolution(n_classes, 1, activation='sigmoid')([h,g])
     #out = Dense(1, activation='sigmoid')(h)
     # print(out)
-    out1 = Dense(1, activation='sigmoid')(out)
+    out = Dense(5, activation='sigmoid')(out)
 
     model = Model(inputs=[x_in,g], outputs=out)
     model.compile(loss='binary_crossentropy', optimizer='adam')
