@@ -6,10 +6,10 @@ import scipy.sparse as sp
 from scipy.sparse.linalg.eigen.arpack import eigsh, ArpackNoConvergence
 from data import Review
 
-maxlen=150
+maxlen=50
 emb_dim = 128
 h_dim = 128
-batch_size=64
+batch_size=128
 epoch=10
 
 MAX_DEGREE=2
@@ -177,9 +177,14 @@ def preprocess_chebyshev_adj(adj,n,symmetric=True):
     return T_k,support
 
 
-def get_train_mask(n,m):
+def get_train_mask(n,review):
     train_mask=[False for i in range(n)]
-    for i in range(m):
+
+    for i in range(len(review)):
+        #print(review[i])
+        if review[i].label.tolist() == [0,0,0,0,0]:
+            #print(i)
+            continue
         train_mask[i]=True
 
     train_mask=np.array(train_mask)
@@ -188,7 +193,7 @@ def get_train_mask(n,m):
 
 
 def prepare_data(trains,tests,V):
-    reviews=labeled+unlabeled+tests
+    reviews=trains+tests
 
     u_dict={}
     for r in reviews:

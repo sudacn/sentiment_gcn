@@ -121,7 +121,7 @@ def read_file(domain):
 
     # print(len(reviews))
 
-    trains=reviews[:3000]
-    tests=reviews[3000:4000]
+    trains=reviews[:5000]
+    tests=reviews[5000:6000]
 
     return trains,tests

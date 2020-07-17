@@ -24,7 +24,7 @@ def gcn(v_size,F,N,n_classes):
     
     #print(e)
     #h = Attention(8, 16)([e, e, e])
-    #h = GlobalAveragePooling1D()(h)
+    h = GlobalAveragePooling1D()(h)
 
     # gcn, support=1
     #h = Dropout(0.5)(h)

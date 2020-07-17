@@ -3,29 +3,37 @@
 from data import read_file
 from util import *
 from nn import lstm,transformer
-from gnn import gcn
+from gnn import gcn,gcn_chebyshev
+import os 
 
-def main1():
-    trains,tests=read_file('Automotive_5')
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
-    V=get_vocabrary(trains)
+PATH = "/data2/nchen/sentiment/data/finalV2.csv"
+#trains,tests=read_file('Automotive_5')
+trains,tests = read_file(PATH)
+V=get_vocabrary(trains)
 
-    # format
-    train_x,y=format_data(trains,V)
-    test_x,_=format_data(tests,V)
+reviews=trains+tests
+n=len(reviews)
+x,y=format_data(reviews,V)
+x=padding(x)
+edges=get_basic_edges(reviews)
 
-    train_x=padding(train_x)
-    test_x=padding(test_x)
 
-    # LSTM
-    #model=lstm(len(V))
-    #model.fit(train_x, y, nb_epoch=10)
-    #pred_y=model.predict(test_x)
+# local pool
+A=preprocess(edges,n)
+_A=preprocess_adj(A,n)
+graph = [x, _A]
 
-    # Transformer
-    model=transformer(len(V))
-    model.fit(train_x, y, nb_epoch=10,shuffle=False)
-    pred_y=model.predict(test_x)
+# train mask
+train_mask=get_train_mask(n,trains)
+#print(x.shape[-1],A.shape[0])
+model=gcn(len(V),x.shape[-1],A.shape[0],5) # vocab_size,x_shape,A_shape,label_size
+model.summary()
+model.fit(graph, y,epochs=100,sample_weight=train_mask,batch_size=A.shape[0],shuffle=False)
+preds = model.predict(graph, batch_size=A.shape[0])
 
-    # Evaluation
-    eval(tests,pred_y)
+pred_y=preds[len(trains):]
+print(pred_y)
+# Evaluation
+eval(tests,pred_y)
